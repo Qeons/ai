@@ -1,11 +1,11 @@
 html, body {
   margin: 0;
   padding: 0;
-  height: 100%; /* Menjamin tinggi 100% */
+  height: 100%; 
   font-family: Arial, sans-serif;
   background-image: url('./utils/background.jpg'); 
-  background-size: cover; /* Memastikan gambar latar belakang memenuhi layar */
-  background-repeat: repeat; /* Mencegah pengulangan gambar */
+  background-size: fixed; 
+  background-repeat: repeat; 
   background-position: center;
 }
 
