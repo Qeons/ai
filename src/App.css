@@ -1,11 +1,11 @@
-body {
+html, body {
   margin: 0;
   padding: 0;
+  height: 100%; /* Menjamin tinggi 100% */
   font-family: Arial, sans-serif;
-  justify-content: center;
-  align-items: center;
   background-image: url('./utils/background.jpg'); 
-  background-size: cover;
+  background-size: cover; /* Memastikan gambar latar belakang memenuhi layar */
+  background-repeat: repeat; /* Mencegah pengulangan gambar */
   background-position: center;
 }
 
@@ -44,8 +44,6 @@ h1 {
   height: 40px;
   font-size: 1rem; 
   width: 100%; 
-  justify-content: center;
-  align-items: center;
 }
 
 .button {
@@ -71,17 +69,6 @@ h1 {
 .response-container.visible {
   opacity: 1;
   transform: translateY(0);
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 @media (max-width: 600px) {
