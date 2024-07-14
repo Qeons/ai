@@ -1,55 +1,57 @@
 import './App.css';
 import { requestToGroqAI } from './utils/groq'; 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Light as SyntaxHighlight } from 'react-syntax-highlighter';
-import { synthwave84 } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import backgroundImage from './utils/background.jpg';
+import { twilight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 function App() {
-  const [data, setData] = useState("");
-  const [isVisible, setIsVisible] = useState(false);
+  const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState(""); 
 
-  const handlesubmit = async (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const ai = await requestToGroqAI(inputValue);
-    setData(ai);
-    setIsVisible(true);
+    
+    const userMessage = { type: 'user', text: inputValue };
+    setMessages(prevMessages => [...prevMessages, userMessage]);
+
+    const context = messages
+      .filter(msg => msg.type === 'user')
+      .map(msg => `User: ${msg.text}`)
+      .join('\n') + `\nUser: ${inputValue}\nAI:`;
+
+    const aiResponse = await requestToGroqAI(context);
+    const botMessage = { type: 'bot', text: aiResponse };
+    setMessages(prevMessages => [...prevMessages, botMessage]);
+
     setInputValue(""); 
   };
-
-  useEffect(() => {
-    if (data) {
-      setIsVisible(true); 
-    }
-  }, [data]);
 
   return (
     <main className="main">
       <h1 className='text-4xl text-indigo-500'>Qeons Ai</h1>
-      <form className='input-container' onSubmit={handlesubmit}>
+      <div className="chat-container">
+        {messages.map((msg, index) => (
+          <div key={index} className={`message ${msg.type}`}>
+            {msg.type === 'user' ? (
+              <div className="user-message">{msg.text}</div>
+            ) : (
+              <SyntaxHighlight language="javascript" style={twilight} wrapLongLines={true}>
+                {msg.text}
+              </SyntaxHighlight>
+            )}
+          </div>
+        ))}
+      </div>
+      <form className='input-container' onSubmit={handleSubmit}>
         <input 
-          placeholder='ketik prompt disini...' 
+          placeholder='Message Qeons Ai' 
           className='input-field' 
-          id='content'
           type='text'
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
         />
-        <button 
-          type='submit'
-          className='button'
-        >
-          Kirim
-        </button>
+        <button type='submit' className='button'>Kirim</button>
       </form>
-      <div className={`response-container ${isVisible ? 'visible' : ''}`}>
-        {data ? (
-          <SyntaxHighlight language="javascript" style={synthwave84} wrapLongLines={true}>
-            {data}
-          </SyntaxHighlight>
-        ) : null}
-      </div>
     </main>
   );
 }
